@@ -1,0 +1,3 @@
+(library
+ (public_name miou_io)
+ (libraries miou miou.unix))
