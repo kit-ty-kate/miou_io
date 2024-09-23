@@ -2,15 +2,15 @@ external reraise : exn -> 'a = "%reraise"
 
 let openfile filename flags perm =
   Miou.yield ();
-  let fd = Unix.openfile filename flags perm in
-  try
-    Miou_unix.of_file_descr fd
-  with
-  | e -> Unix.close fd; reraise e
+  Unix.openfile filename flags perm
+
+let close fd =
+  Miou.yield ();
+  Unix.close fd
 
 let with_file filename flags perm f =
   let fd = openfile filename flags perm in
-  Fun.protect ~finally:(fun () -> Miou_unix.close fd) begin fun () ->
+  Fun.protect ~finally:(fun () -> close fd) begin fun () ->
     f fd
   end
 
